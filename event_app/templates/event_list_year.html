@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+
+{% if events != '' %}
+<div class="container-fluid">
+    <div class="col-md-12">
+
+        <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <a href="#" class="btn btn-primary btn-icon-split">
+                <span class="icon text-white-50">
+                    <i class="fas fa-flag"></i>
+                </span>
+                <span class="text">List of All events {{ year_instance }}</span>
+            </a>
+        </div>
+        <div class="row">
+            {% for event in events %}
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-4 col-md-6 mb-4">
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-body">
+
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xl font-weight-bold text-info text-uppercase mb-1">
+                                    <a href='{{ event.get_absolute_url }}'>{{event.event_name}}</a>
+                                </div>
+                                <div class="p mb-0 text-gray-800">
+                                    <p class='text-small'>Date: {{event.date }}<br>{{ event.year }}</p>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    {% else %}
+    <h2>No event for Year: {{ year_instance }} currently</h2>
+    {% endif %}
+
+    {% endblock content %}

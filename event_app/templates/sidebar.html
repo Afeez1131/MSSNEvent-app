@@ -1,0 +1,115 @@
+{% load static %}
+<div class="wrapper d-flex align-items-stretch">
+    <nav id="sidebar">
+        <div class="custom-menu">
+            <button type="button" id="sidebarCollapse" class="btn btn-primary">
+                <i class="fa fa-bars"></i>
+                <span class="sr-only">Toggle Menu</span>
+            </button>
+        </div>
+        <h1><a href="index.html" class="logo">Project Name</a></h1>
+        <ul class="list-unstyled components mb-5">
+            <li class="active">
+                <a href="#"><span class="fa fa-home mr-3"></span> Homepage</a>
+            </li>
+            <li>
+                <a href="#"><span class="fa fa-user mr-3"></span> Dashboard</a>
+            </li>
+            <li>
+                <a href="#"><span class="fa fa-sticky-note mr-3"></span> Friends</a>
+            </li>
+            <li>
+                <a href="#"><span class="fa fa-sticky-note mr-3"></span> Subcription</a>
+            </li>
+            <li>
+                <a href="#"><span class="fa fa-paper-plane mr-3"></span> Settings</a>
+            </li>
+            <li>
+                <a href="#"><span class="fa fa-paper-plane mr-3"></span> Information</a>
+            </li>
+        </ul>
+
+    </nav>
+
+    <!-- Page Content  -->
+    <div id="content" class="p-4 p-md-5 pt-5">
+        <h2 class="mb-4">Sidebar #04</h2>
+        {% if page_obj %}
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>S/N</th>
+                            <th>Name</th>
+                            <th>Level</th>
+                            <th>Phone No.</th>
+                            <th>Visitor</th>
+                            <th>Sex</th>
+                            <th>Dept.</th>
+                            <th>E-mail</th>
+                            <th>Day</th>
+                        </tr>
+                    </thead>
+                    {% for attendant in page_obj %}
+
+                    <tbody>
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ attendant.name}}</td>
+                            <td>{{ attendant.level}}</td>
+                            <td>{{ attendant.phone_number}}</td>
+                            <td>{{ attendant.visitor}}</td>
+                            <td>{{ attendant.sex}}</td>
+                            <td>{{ attendant.department}}</td>
+                            <td>{{ attendant.email}}</td>
+
+                            <td>{{ attendant.day}}</td>
+                        </tr>
+                    </tbody>
+                    {% endfor %}
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+    {% if page_obj.has_previous %}
+    <div class="bd-example">
+        <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+            <div class="btn-group me-2" role="group" aria-label="First group">
+                <button type="button" class="btn btn-success"><a class="text-white" href="?page=1">&laquo; 1</a>
+                </button>
+                <button type="button" class="btn btn-success "><a class="text-white"
+                        href="?page-{{page_obj.previous}}">previous</a></button>
+                {% endif %}
+                <button type="button" class="btn btn-success">Page {{page_obj.number}} of
+                    {{page_obj.paginator.num_pages}}</button>
+                {% if page_obj.has_next %}
+
+                <button type="button" class="btn btn-success"><a class="text-white"
+                        href="?page={{page_obj.next_page_number}}">next</a>
+                </button>
+                <button type="button" class="btn btn-success"><a class="text-white"
+                        href="?page={{page_obj.paginator.num_pages}}">Last &raquo;</a>
+                </button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <h3>Event Name: {{ events.event_name | title}}</h3>
+    <h2>No registered Attendant Presently</h2>
+</div>
+
+{% endif %}
+    </div>
+</div>
+
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<script src="{% static 'js/popper.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/main.js' %}"></script>

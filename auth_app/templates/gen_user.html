@@ -1,0 +1,7 @@
+<h1>Welcome to the User Generate Page</h1>
+
+<a href="{% url 'gen_user' %}">+ Generate user</a>
+
+{% if username %}
+<p>Username: {{username}} | Password: {{password}}</p>
+{% endif %}

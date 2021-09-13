@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+Home Page
+{% endblock title %}
+
+{% block content %}
+<!-- ======= About Us Section ======= --><br>
+<section id="about" class="about">
+    <div class="container">
+
+        <div class="section-title">
+            <h2>About Us</h2>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6 order-1 order-lg-2">
+                <img src="{% static 'img/mosque3.jpg' %}" class="img-fluid" alt="">
+            </div>
+            <div class="col-lg-6 pt-4 pt-lg-0 order-2 order-lg-1">
+                <h3>MSSN LAUTECH BRANCH.</h3>
+                <p class="font-italic">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
+                    et dolore
+                    magna aliqua.
+                </p>
+                <ul>
+                    <li><i class="icofont-check-circled"></i> Ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                    </li>
+                    <li><i class="icofont-check-circled"></i> Duis aute irure dolor in reprehenderit in voluptate velit.
+                    </li>
+                    <li><i class="icofont-check-circled"></i> Ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                        Duis aute irure dolor in reprehenderit in voluptate trideta storacalaperda mastiro dolore eu
+                        fugiat nulla pariatur.</li>
+                </ul>
+                <p>
+                    Ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
+                    voluptate
+                    velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident,
+                    sunt in
+                    culpa qui officia deserunt mollit anim id est laborum
+                </p>
+            </div>
+        </div>
+
+    </div>
+</section><!-- End About Us Section -->
+<div class="row">
+
+
+    <div class="container  mt-5 mb-5">
+        <div class="section-title">
+            <h2>RECENTLY CREATED EVENT</h2>
+
+        </div>
+        <div class="row m-0">
+            {% for event in recent_event %}
+            <div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <span class="badge bg-success text-white">Event {{forloop.counter}}</span>
+                        <h3 class="card-title">HTML</h3>
+                        <h5 class="card-subtitle mb-2 text-muted"><a
+                                href="{{event.get_absolute_url}}">{{event.event_name}}</a></h5>
+                        <p class="card-text">DATE: {{event.date}}<br>Year: {{event.year}}</p>
+                    </div>
+
+                </div>
+
+            </div>
+            {% endfor %}
+            <div class="col-lg-6  offset-lg-5 justify-content-center">
+                <a class="btn btn-md btn-success bordered-10" href="{% url 'event_list' %}" style="border-radius: 10px;">List all Events.</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</div>
+
+
+
+{% endblock content %}
+
+<div>
+    <i class="fas fa-search-location"></i>
+    <p>Behind Student Union Building,<br>LAUTECH, Ogbomoso, Oyo State.</p>
+</div>
+
+<div>
+    <i class="fas fa-at"></i>
+    <p>mssnlautech@gmail.com</p>
+</div>
+
+<div>
+    <i class="fas fa-phone-alt"></i>
+    <p>+234 80 6059 0020</p>
+</div>
+
+</div>
+</div>

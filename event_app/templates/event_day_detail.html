@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+{{events}} | Attendant
+{% endblock title %}
+
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-3 col-lg-2 align-items-center justify-content-between mb-3">
+            <a href="{% url 'event_attendant' events.slug %}" class="btn btn-success btn-icon-split">
+                <span class="icon text-white-50">
+                    <i class="fas fa-users"></i>
+
+                </span>
+                <span class="text"> List all Attendants</span>
+            </a>
+        </div>
+
+        <div class="col-lg-3 align-items-right justify-content-between mb-3">
+            <a href="{% url 'attendant_create' events.slug %}" class="btn btn-primary btn-icon-split">
+                <span class="icon text-white-50">
+                    <i class="fas fa-user-plus"></i>
+
+
+                </span>
+                <span class="text"> + Register Attendant</span>
+            </a>
+        </div>
+        <div class="col-lg-3 align-items-right justify-content-between mb-3">
+            <a href="{% url 'export_day_csv' slug=events.slug day=day %}" class="btn btn-primary btn-icon-split">
+                <span class="icon text-white-50">
+                    <i class="fas fa-file-csv"></i>
+                </span>
+                <small class="text">Generate Report</small>
+            </a>
+        </div>
+        <div class="col-lg-3 align-items-right justify-content-between mb-3">
+            <a href="{% url 'dashboard' slug=events.slug day=day %}" class="btn btn-primary btn-icon-split">
+                <span class="icon text-white-50">
+                    <i class="fas fa-chart-bar"></i>
+                </span>
+                <small class="text">Dashboard</small>
+            </a>
+        </div>
+    </div>
+
+
+    {% if page_obj %}
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>S/N</th>
+                            <th>Name</th>
+                            <th>Level</th>
+                            <th>Phone No.</th>
+                            <th>Visitor</th>
+                            <th>Sex</th>
+                            <th>Dept.</th>
+                            <th>E-mail</th>
+                            <th>Day</th>
+                        </tr>
+                    </thead>
+                    {% for attendant in page_obj %}
+
+                    <tbody>
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ attendant.name}}</td>
+                            <td>{{ attendant.level}}</td>
+                            <td>{{ attendant.phone_number}}</td>
+                            <td>{{ attendant.visitor}}</td>
+                            <td>{{ attendant.sex}}</td>
+                            <td>{{ attendant.department}}</td>
+                            <td>{{ attendant.email}}</td>
+
+                            <td>{{ attendant.day}}</td>
+                        </tr>
+                    </tbody>
+                    {% endfor %}
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+    {% if page_obj.has_previous %}
+    <div class="bd-example">
+        <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+            <div class="btn-group me-2" role="group" aria-label="First group">
+                <button type="button" class="btn btn-success"><a class="text-white" href="?page=1">&laquo; 1</a>
+                </button>
+                <button type="button" class="btn btn-success "><a class="text-white"
+                        href="?page-{{page_obj.previous}}">previous</a></button>
+                {% endif %}
+                <button type="button" class="btn btn-success">Page {{page_obj.number}} of
+                    {{page_obj.paginator.num_pages}}</button>
+                {% if page_obj.has_next %}
+
+                <button type="button" class="btn btn-success"><a class="text-white"
+                        href="?page={{page_obj.next_page_number}}">next</a>
+                </button>
+                <button type="button" class="btn btn-success"><a class="text-white"
+                        href="?page={{page_obj.paginator.num_pages}}">Last &raquo;</a>
+                </button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <h3>Event Name: {{ events.event_name | title}}</h3>
+    <h2>No registered Attendant Presently</h2>
+</div>
+
+{% endif %}
+{% endblock content %}

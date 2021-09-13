@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<div class="container-fluid">
+<h2>All Attendant List</h2>
+
+
+{% for attendant in attendants %}
+<p>{{forloop.counter}}. {{ attendant.name }}</p>
+{% endfor %}
+
+</div>
+{% endblock content %}

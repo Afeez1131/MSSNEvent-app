@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<div class="container-fluid">
+
+
+    <div class="form-group">
+        <div class="col-md-6 offset-md-3">
+    <h1 class="justify-content-center">Signup Page</h1>
+
+            <form method="POST">
+
+                {% if form.errors %}
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <b>{{ form.errors }}</b>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                {% endif %}
+                {% csrf_token %}
+                {{ form.as_p }}
+                <input type="submit" class="btn btn-primary" value="Register">
+            </form>
+            <hr>
+            <p>Already a member, <a href="{% url 'login' %}">Log In</a></p>
+        </div>
+    </div>
+</div>
+{% endblock content %}

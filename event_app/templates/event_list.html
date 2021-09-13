@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+Event Lists
+{% endblock title %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+     <!-- ======= Services Section ======= -->
+     <section id="services" class="services section-bg">
+  
+          <div class="section-title">
+            <h2>Latest Events</h2>
+            <p></p>
+          </div>
+  
+          <div class="row">
+          {% for event in events %}
+            <div class="col-lg-4 col-md-6 icon-box">
+              <div class="icon"><i class="icofont-tasks-alt"></i></div>
+              <h4 class="title"><a href='{{ event.get_absolute_url }}'>{{event.event_name}}</a></h4>
+              <p class="description">Date: {{event.date }}<br>{{ event.year }}</p>
+            <hr>
+
+            </div>
+          {% endfor %}
+
+          </div>
+  
+      </section><!-- End Services Section -->
+</div>  
+    {% endblock content %}

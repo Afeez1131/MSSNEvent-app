@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+Register User
+{% endblock title %}
+
+{% block content %}
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-lg-5">
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <p>{{user}} with the below details is registered for the event.</p>
+                <hr>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {% endfor %}{% endif %}
+            <div class="form-group">
+                <form action="" method="post">
+                    {% csrf_token %}
+                    {{ form | crispy}}
+
+                    <input type="submit" class="btn btn-success" value="Register User">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
