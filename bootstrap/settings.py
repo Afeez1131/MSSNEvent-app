@@ -147,7 +147,7 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'app/static'),
                     os.path.join(BASE_DIR, 'event_app/static'),
 
 ]
-
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
