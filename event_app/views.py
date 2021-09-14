@@ -11,6 +11,14 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
 
+from django.template import RequestContext
+
+
+def handler404(request, *args, **argv):
+    response = render('404.html', {}, context_instance=RequestContext(request))
+    response.status_code = 404
+    return response
+
 
 def HomePageView(request):
     template_name = 'home.html'

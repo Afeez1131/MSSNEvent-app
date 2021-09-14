@@ -5,7 +5,7 @@ Home Page
 {% endblock title %}
 
 {% block content %}
-<!-- ======= About Us Section ======= --><br>
+<br>
 <section id="about" class="about">
     <div class="container">
 
@@ -44,7 +44,7 @@ Home Page
         </div>
 
     </div>
-</section><!-- End About Us Section -->
+</section>
 <div class="row">
 
 
@@ -70,7 +70,8 @@ Home Page
             </div>
             {% endfor %}
             <div class="col-lg-6  offset-lg-5 justify-content-center">
-                <a class="btn btn-md btn-success bordered-10" href="{% url 'event_list' %}" style="border-radius: 10px;">List all Events.</a>
+                <a class="btn btn-md btn-success bordered-10" href="{% url 'event_list' %}"
+                    style="border-radius: 10px;">List all Events.</a>
             </div>
         </div>
     </div>
