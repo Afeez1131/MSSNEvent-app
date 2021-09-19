@@ -30,3 +30,5 @@ urlpatterns = [
     # path('<filename>.html', views.html),
     # path('', views.index),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -85,7 +85,11 @@ a:hover, a:visited, a:link, a:active {
   }
 
   .section-bg {
-    background-color: #f2f9f8;
+    background-color: #b2bdbb;
+  }
+
+  .section-bg-footer {
+    background-color: #fff;
   }
 
   .section-title {
@@ -249,6 +253,10 @@ section {
 
 .section-bg {
   background-color: #fff;
+}
+
+.section-bg-2 {
+  background-color: rgb(163, 57, 57);
 }
 .services .icon-box {
   margin-bottom: 20px;
