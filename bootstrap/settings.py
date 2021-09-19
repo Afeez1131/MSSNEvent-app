@@ -147,7 +147,7 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'app/static'),
                     os.path.join(BASE_DIR, 'event_app/static'),
 
                     ]
-
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     # 'django.contrib.staticfiles.finders.AppDirectoriesFinder',    #causes verbose duplicate notifications in django 1.9
