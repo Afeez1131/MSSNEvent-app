@@ -21,14 +21,42 @@ Register User
             </div>
             {% endfor %}{% endif %}
             <div class="form-group">
-                <form action="" method="post">
+                <form action="" method="post" id="attendant-form">
                     {% csrf_token %}
                     {{ form | crispy}}
-
+                    <input type="hidden" name='event_slug' value="{{ slug }}">
                     <input type="submit" class="btn btn-success" value="Register User">
                 </form>
             </div>
         </div>
+
     </div>
 </div>
 {% endblock content %}
+{% block script %}
+<script type="text/javascript">
+    let form = $('#attendant-form')
+    form.submit(function (e) {
+        e.preventDefault();
+
+        $.ajax({
+            url: '/create-event-attendants',
+            type: 'POST',
+            data: $(this).serialize(),
+            dataType: 'json',
+            processData: false,
+            success: function (e) {
+                if (e.success) {
+                    $.notify('Attendants Created Successfully.', 'success');
+                } else if(e.exception) {
+                    $.notify('Error occured ' + e.exception, 'error')
+                } else if(e.servererror) {
+                    $.notify('Error occured ' + e.servererror, 'error')
+                }
+            },
+            error: function (e) {$.notify('Error occured', 'error')}
+        })
+    })
+
+</script>
+{% endblock %}

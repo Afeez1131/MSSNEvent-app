@@ -1,7 +1,109 @@
-<h1>Welcome to the User Generate Page</h1>
+{% extends 'base.html' %}
 
-<a href="{% url 'gen_user' %}">+ Generate user</a>
 
-{% if username %}
-<p>Username: {{username}} | Password: {{password}}</p>
-{% endif %}
+{% block content %}
+    <div style="padding-top:40px">
+
+    </div>
+
+
+
+    <div class="container card card-body">
+        <form action="" method="post" id='generate-user-form' style="padding: 30px;">
+            {% csrf_token %}
+            <input type="hidden" name="action" id="gen-user" value="create_user">
+            <button class="btn btn-block btn-success" id="gen_user_button"
+                    onclick="generate_user();">Generate New User</button>
+        </form>
+        <p>NB: The default password for all generated user is <em style="color:red;">"password"</em></p>
+        <table class="table table-bordered" id="user-table">
+            <tr>
+                <th>s/n</th>
+                <th>Username</th>
+                <th>Reset Password</th>
+            </tr>
+            <tbody id="user-table-body">
+            {% for user in recent_users %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>
+                        <button type="submit" class="btn btn-md btn-warning"
+                        onclick="setFormValue('{{ user.id }}');">Reset Password</button>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <form action="" method="post" id="reset_password">
+        {% csrf_token %}
+        <input type="hidden" id="action" name="action" value="reset_password">
+        <input type="hidden" id='uid' name="user" value="">
+    </form>
+
+{% endblock %}
+
+{% block script %}
+    <script type="text/javascript">
+
+    const form = $('#reset_password');
+
+    function setFormValue(uid) {
+        const name = $('#uid').val(uid);
+        form.submit();
+    }
+        form.submit(function (e) {
+            e.preventDefault();
+            console.log('form submitted');
+            {#const formData = new FormData(this);#}
+            $.ajax({
+                url: '/accounts/reset-password/',
+                type: 'POST',
+                data: {
+                    "uid": $('#uid').val(),
+                    "action": $('#action').val(),
+                    'csrfmiddlewaretoken': getCookie('csrftoken')
+                },
+                dataType: 'json',
+                success: resetSuccess,
+                error: resetError
+            })
+        })
+
+    function resetSuccess() {
+            console.log('reset success');
+        $.notify("Password Reset Succes.", "success");
+
+    }
+    function resetError() {
+            console.error('error occured');
+            $.notify("Error Occured", "error");
+    }
+
+    function generate_user() {
+        let form = $('#generate-user-form');
+        form.submit(function (e) {
+            e.preventDefault()
+            $.ajax({
+                url: '/accounts/create-user/',
+                type: 'POST',
+                data: {
+                    'csrfmiddlewaretoken': getCookie('csrftoken')
+                },
+                success: function (data) {
+                    $('#user-table-body').html(data.users);
+                    $.notify("User Created Successfully.", "success");
+                    },
+                error: function (e) {$.notify("Error Occured", "error");}
+            })
+                    $('#gen_user_button').disable();
+
+        });
+    }
+    function generateUserSuccess() {
+
+    }
+
+    </script>
+{% endblock %}

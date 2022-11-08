@@ -50,9 +50,9 @@ class AttendantCreateForm(forms.ModelForm):
 class EventCreateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(EventCreateForm, self).__init__(*args, **kwargs)
-        self.fields['date'].disabled = True
+        # self.fields['date'].disabled = True
         self.fields['date'].label = ''
-        self.fields['date'].help_text = '<small class="text-mute text-danger">The date is generated Automatically</small>'
+        self.fields['date'].help_text = '<small class="text-mute text-danger">The date is generated Automatically (YYYY-MM-DD). </small>'
 
         self.fields['event_name'].help_text = '<small class="text-mute text-danger">Enter the name of the event...  </small>'
         self.fields['event_name'].widget.attrs['placeholder'] = 'name of the event...'

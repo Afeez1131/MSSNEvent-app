@@ -1,17 +1,66 @@
 {% extends 'base.html' %}
-
-
+{% load crispy_forms_tags %}
+{% load i18n %}
 {% block content %}
-<div class="container-fluid">
-    <div class="col-md-6">
-        <h1>Welcome to the Login Page</h1>
+    <!-- Header -->
+    <header class="ex-header" style="padding-top:50px;">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-10 offset-xl-1">
+                    <h1 class="text-center">{% trans "Sign In" %}</h1>
+                </div> <!-- end of col -->
+            </div> <!-- end of row -->
+        </div> <!-- end of container -->
+    </header> <!-- end of ex-header -->
 
-        <form action="" method="post">
-            {% csrf_token %}
-            {{form.as_p}}
+    <div class="container col-xl-8 offset-xl-2 col-md-8 col-xs-12 offset-md-2 mb-1">
+        <div class="row align-items-center">
+             <div class="col-md-10 offset-md-1 mx-auto col-lg-6 offset-lg-3">
 
-            <input type="submit" value="Log In" class="btn btn-success">
-        </form>
+                <div class="text-box mt-3 mb-5">
+                {% if form.non_field_errors %}
+                        <div class="alert alert-danger alert-dismissible fade show" id='message-alert' role="alert">
+                            {% for error in form.non_field_errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    {% if messages %}
+                        <div class="alert alert-danger alert-dismissible fade show" id='message-alert' role="alert">
+                            {% for message in messages %}
+                                <b>{{ message }}</b>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <form class="signup p-4 p-md-6 border rounded-3 bg-light" id="signup_form" method="post">
+                        {% csrf_token %}
+{#                    <small>For Testing, Use dafault credentials: <strong>demo / password@123</strong></small>#}
+                        <hr>
+                        <div class="form-floating mb-3">
+                           {% for field in form %}
+                                <div class="mb-3">
+                                    {{ field | as_crispy_field }}
+                                </div>
+                            {% endfor %}
+                            {% if redirect_field_value %}
+                                <input type="hidden" name="next"
+                                       value="{{ request.GET.next }}"/>
+                            {% endif %}
+                        </div>
+                     <div class="mb-3  text-center">
+                        <button class="w-50 btn btn-lg btn-primary" type="submit">Log in&raquo;</button>
+                     </div>
+                        <hr class="my-4">
+                        <small class="text-muted">By clicking Sign up, you agree to the terms of use.</small>
+                        <small class='text-small'>If you have not created an account yet, then please <a
+                                href="{% url 'signup' %}">sign up</a> first.</small><br>
+
+
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
-{% endblock content %}
+
+{% endblock %}

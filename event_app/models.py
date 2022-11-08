@@ -12,8 +12,9 @@ from django.forms import ValidationError
 
 
 class Year(models.Model):
-    year = models.CharField(max_length=4,
-                            default=datetime.now().year, unique=True)
+    # year = models.CharField(max_length=4,
+    #                         default=datetime.now().year, unique=True)
+    year = models.CharField(max_length=4, unique=True)
 
     def __str__(self):
         return str(self.year)
@@ -149,6 +150,7 @@ class Attendant(models.Model):
 
     class Meta:
         ordering = ('-id',)
+        unique_together = (('eventdetail', 'name', 'day', 'phone_number', 'level'),)
 
     # def get_absolute_url(self):
     #     return reverse('event_attendant', kwargs={'slug': self.slug, 'id': self.day,})

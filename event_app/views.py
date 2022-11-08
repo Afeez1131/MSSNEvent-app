@@ -1,5 +1,8 @@
-from django.http.response import Http404
+from django.db.utils import IntegrityError
+from django.http.response import Http404, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
+from django.urls import reverse
+
 from .models import EventDetail, Attendant, Year
 from .forms import AttendantCreateForm, EventCreateForm
 from datetime import datetime
@@ -20,22 +23,22 @@ def handler404(request, *args, **argv):
     return response
 
 
-def HomePageView(request):
+def home(request):
     template_name = 'home.html'
 
     recent_event = EventDetail.objects.all()[:4]
     return render(request, template_name, {'recent_event': recent_event, })
 
+
 # event function start
 
-
-def EventList(request):
+@login_required()
+def event_list(request):
     events = EventDetail.objects.all()
-
     return render(request, 'event_list.html', {'events': events, })
 
 
-def EventListViewByYear(request, year):
+def event_list_year(request, year):
     # events = get_object_or_404(EventDetail, year=year)
     try:
         year_instance = Year.objects.get(year=year)
@@ -48,16 +51,16 @@ def EventListViewByYear(request, year):
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
-def EventCreateView(request):
+def event_create(request):
     if request.method == 'POST':
         form = EventCreateForm(request.POST)
         if form.is_valid():
-            form_year = form.cleaned_data['year'] = datetime.now().year
-            year = get_object_or_404(Year, year=form_year)
+            event_year = datetime.now().year
+            year, _ = Year.objects.get_or_create(year=event_year)
             f = form.save(commit=False)
             f.year = year
             f.save()
-            return redirect('event_list')
+            return HttpResponseRedirect(reverse('event_list'))
     else:
         form = EventCreateForm()
     return render(request, 'event_create.html', {'form': form, })
@@ -76,7 +79,7 @@ def export_all_attendant(request, slug):
 
     writer = csv.writer(response)
     writer.writerow(['day', 'name', 'level', 'phone_number',
-                    'visitor', 'department', 'sex', 'email'])
+                     'visitor', 'department', 'sex', 'email'])
 
     attendants_csv = attendants.values_list(
         'day', 'name', 'level', 'phone_number', 'visitor', 'department', 'sex', 'email')
@@ -99,7 +102,7 @@ def export_days_attendant(request, slug, day):
 
         writer = csv.writer(response)
         writer.writerow(['day', 'name', 'level', 'phone_number',
-                        'visitor', 'department', 'sex', 'email'])
+                         'visitor', 'department', 'sex', 'email'])
         attendants = Attendant.objects.filter(eventdetail=events, day=day).values_list(
             'day', 'name', 'level', 'phone_number', 'visitor', 'department', 'sex', 'email')
         for att in attendants:
@@ -114,10 +117,9 @@ def export_days_attendant(request, slug, day):
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
-def EventAllAttendant(request, slug):
-
-    events = get_object_or_404(EventDetail, slug=slug)
-    attendants = Attendant.objects.all().filter(eventdetail=events)
+def all_attendants(request, slug):
+    event = get_object_or_404(EventDetail, slug=slug)
+    attendants = event.attendants.all().order_by('-id')
     paginator = Paginator(attendants, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -131,14 +133,39 @@ def EventAllAttendant(request, slug):
 
     day_list.sort()
     return render(request, 'event_detail.html', {'attendants': attendants,
-                                                 'events': events, 'page_obj': page_obj,
+                                                 'event': event, 'page_obj': page_obj,
                                                  'day_list': day_list,
                                                  })
+
+def reload_attendants(event, slug, day=None):
+    if day:
+        attendants = event.attendants.filter(day=day)
+    else:
+        attendants = event.attendants.all().order_by('-id')
+    attendants = [attendant for attendant in attendants]
+    out = []
+    for i in range(len(attendants)):
+        counter = i + 1
+        att = attendants[i]
+        url = reverse('event_attendant', args=[slug])
+        day_url = reverse('event_list_day', args=[slug, att.day])
+        if not day:
+            d = f'''<tr><td>{counter}</td><td>{att.name}</td><td>{att.level}</td><td>{att.phone_number}</td><td>{att.visitor}</td><td>{att.sex}</td><td>{att.department}</td><td>{att.email}</td><td><a href="{day_url}">{att.day}</a></td></tr>'''
+        else:
+            d = f'''<tr><td>{counter}</td><td>{att.name}</td><td>{att.level}</td><td>{att.phone_number}</td><td>{att.visitor}</td><td>{att.sex}</td><td>{att.department}</td><td>{att.email}</td><td>{att.day}</td></tr>'''
+        out.append(d)
+    return out
+
+def ajax_all_attendants(request):
+    slug = request.GET.get('slug')
+    day = request.GET.get('day') or None
+    event = EventDetail.objects.get(slug=slug)
+    return JsonResponse({'attendants': reload_attendants(event, slug, day)})
 
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
-def AttendantByDay(request, slug, day):
+def attendant_by_day(request, slug, day):
     events = get_object_or_404(EventDetail, slug=slug)
 
     try:
@@ -155,7 +182,7 @@ def AttendantByDay(request, slug, day):
                                                      })
 
 
-def AttendantCreateView(request, slug):
+def create_attendant(request, slug):
     eventdetail = get_object_or_404(EventDetail, slug=slug)
     name = None
     if request.method == 'POST':
@@ -175,7 +202,32 @@ def AttendantCreateView(request, slug):
                 return redirect('event_list_day', day=day, slug=slug)
     else:
         form = AttendantCreateForm()
-    return render(request, 'attendant_create.html', {'form': form, 'name': name})
+    return render(request, 'attendant_create.html', {'form': form, 'name': name, 'slug': eventdetail.slug})
+
+
+def ajax_create_attendants(request):
+    print(request.POST)
+    day = request.POST.get('day')
+    name = request.POST.get('name')
+    level = request.POST.get('level')
+    phone_number = request.POST.get('phone_number')
+    visitor = request.POST.get('visitor')
+    department = request.POST.get('department')
+    email = request.POST.get('email')
+    sex = request.POST.get('sex')
+    slug = request.POST.get('event_slug')
+    try:
+        event = EventDetail.objects.get(slug=slug)
+        Attendant.objects.create(eventdetail=event, day=day, name=name,
+                                 level=level, phone_number=phone_number, visitor=visitor,
+                                 department=department, email=email, sex=sex)
+    except IntegrityError as ie:
+        return JsonResponse({'exception': 'Duplicate entry not allowed.'})
+    except Exception as e:
+        return JsonResponse({'servererror': 'An internal serval error, kindly try again.'})
+
+    return JsonResponse({'success': 'Okay'})
+
 
 # attendant function end
 
@@ -184,7 +236,7 @@ def AttendantCreateView(request, slug):
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
-def DashboardView(request, slug, day):
+def dashboard(request, slug, day):
     labels = ["jan", "feb", "mar", "apr"]
     data = [100, 300, 300, 200]
 
@@ -216,7 +268,7 @@ def DashboardView(request, slug, day):
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
-def DashboardViewAll(request, slug):
+def dashboard_all(request, slug):
     labels = ["jan", "feb", "mar", "apr"]
     data = [100, 300, 300, 200]
 

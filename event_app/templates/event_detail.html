@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block title %}
-{{events | title}}
+{{event | title}}
 {% endblock title %}
 
 {% block content %}
@@ -8,7 +8,7 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-3 align-items-center justify-content-between mb-3">
-            <a href="{% url 'event_attendant' events.slug %}" class="btn btn-success btn-icon-split">
+            <a href="{% url 'event_attendant' event.slug %}" class="btn btn-success btn-icon-split">
                 <span class="icon text-white-50">
                     <i class="fas fa-users"></i>
                 </span>
@@ -17,7 +17,7 @@
         </div>
 
         <div class="col-lg-3 align-items-right justify-content-between mb-2 ">
-            <a href="{% url 'attendant_create' events.slug %}" class="btn btn-primary btn-icon-split">
+            <a href="{% url 'attendant_create' event.slug %}" class="btn btn-primary btn-icon-split">
                 <span class="icon text-white-50">
                     <i class="fas fa-user-plus"></i>
                 </span>
@@ -25,7 +25,7 @@
             </a>
         </div>
         <div class="col-lg-3 align-items-right justify-content-between mb-2">
-            <a href="{% url 'export_csv' events.slug %}" class="btn btn-primary btn-icon-split">
+            <a href="{% url 'export_csv' event.slug %}" class="btn btn-primary btn-icon-split">
                 <span class="icon text-white-50">
                     <i class="fas fa-file-csv"></i>
                 </span>
@@ -33,7 +33,7 @@
             </a>
         </div>
         <div class="col-lg-3 align-items-right justify-content-between mb-3">
-            <a href="{% url 'dashboard' slug=events.slug %}" class="btn btn-primary btn-icon-split">
+            <a href="{% url 'dashboard' slug=event.slug %}" class="btn btn-primary btn-icon-split">
                 <span class="icon text-white-50">
                     <i class="fas fa-chart-bar"></i>
                 </span>
@@ -60,9 +60,9 @@
                             <th>Day</th>
                         </tr>
                     </thead>
+                    <tbody id="attendants_body">
                     {% for attendant in page_obj %}
 
-                    <tbody>
                         <tr>
                             <td>{{ forloop.counter }}</td>
                             <td>{{ attendant.name}}</td>
@@ -79,8 +79,8 @@
                             <td><a href="{{request.path}}{{ attendant.day}}">{{ attendant.day}}</a></td>
                             {% endif %}
                         </tr>
-                    </tbody>
                     {% endfor %}
+                    </tbody>
                 </table>
 
             </div>
@@ -112,9 +112,31 @@
         </div>
     </div>
     {% else %}
-    <h3>Event Name: {{ events.event_name | title}}</h3>
+    <h3>Event Name: {{ event.event_name | title}}</h3>
     <h2>No registered Attendant Presently</h2>
 </div>
-
 {% endif %}
+    <input type="hidden" id="event_slug" name='event_slug' value="{{ event.slug }}">
+
 {% endblock content %}
+
+{% block script %}
+<script type="text/javascript">
+
+console.log($('#event_slug').val());
+    function reload_attendants() {
+        $.ajax({
+            url: '/all-attendants/',
+            type: 'GET',
+            dataType: 'json',
+            data: {'slug': $('#event_slug').val()},
+            success: function (data) {
+                $.notify('Data updated', 'success');
+                $('#attendants_body').html(data.attendants);
+            },
+            error: function (data) {$.notify('Error occured', 'error');}
+        })
+    }
+        window.setInterval(reload_attendants, 5000);
+</script>
+{% endblock %}
