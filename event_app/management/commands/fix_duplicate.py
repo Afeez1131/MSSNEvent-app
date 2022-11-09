@@ -3,7 +3,7 @@ from django.core.management import BaseCommand
 from event_app.models import EventDetail, Attendant
 
 
-class Commands(BaseCommand):
+class Command(BaseCommand):
     def handler(self, *args, **kwargs):
         events = EventDetail.objects.all()
         duplicate_list = []
