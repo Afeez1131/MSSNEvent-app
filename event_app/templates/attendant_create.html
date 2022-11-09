@@ -47,11 +47,10 @@ Register User
             processData: false,
             success: function (e) {
                 if (e.success) {
-
+                    $('#attendant-form').trigger("reset");
                     $.notify('Attendants Created Successfully.', 'success');
 
                 } else if(e.exception) {
-                    $('#attendant-form').trigger("reset");
                     $.notify('Error occured ' + e.exception, 'error')
                 } else if(e.servererror) {
                     $.notify('Error occured ' + e.servererror, 'error')

@@ -234,7 +234,6 @@ def create_attendant(request, slug):
 
 
 def ajax_create_attendants(request):
-    print(request.POST)
     day = request.POST.get('day')
     name = request.POST.get('name')
     level = request.POST.get('level')
