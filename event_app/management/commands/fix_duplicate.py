@@ -9,6 +9,7 @@ class Command(BaseCommand):
         for event in events:
             attendants = event.attendants.all()
             duplicate_list = []
+            ids = []
 
             for att in attendants:
                 name = att.name
@@ -20,8 +21,10 @@ class Command(BaseCommand):
                 if atts.count() > 1:
                     for item in atts:
                         duplicate_list.append(item)
+                        ids.append(item.id)
                     # atts[1:].delete()
                     print('duplicate list: ', duplicate_list)
+                    print('id list: ', ids)
 
 
         print('----------------done---------------')
