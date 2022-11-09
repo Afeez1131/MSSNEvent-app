@@ -14,6 +14,7 @@ class Command(BaseCommand):
                 at = Attendant.objects.filter(name=att.name, day=att.day, level=att.level,
                                               phone_number=att.phone_number, department=att.department)
                 if at.count() > 1:
-                    print('dupplicate: ', [x.phone_number for x in at])
+                    for attendant in at[1:]:
+                        attendant.delete()
 
         print('----------------done---------------')
