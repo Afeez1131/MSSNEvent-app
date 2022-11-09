@@ -182,7 +182,6 @@ def ajax_paginate(request):
             d = f'''<tr><td>{counter}</td><td>{att.name}</td><td>{att.level}</td><td>{att.phone_number}</td><td>{att.visitor}</td><td>{att.sex}</td><td>{att.department}</td><td>{att.email}</td><td>{att.day}</td></tr>'''
         out.append(d)
     fout = ''.join(out)
-
     return JsonResponse({'attendants': fout, 'pagination': pagination})
 
 
