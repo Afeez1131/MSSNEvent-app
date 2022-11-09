@@ -18,5 +18,5 @@ class Command(BaseCommand):
                                          day=day, level=level)
                 if atts.count() > 1:
                     # atts[1:].delete()
-                    print('duplicate attendants: ', atts.name, atts.day, atts.level)
+                    print('duplicate attendants: ', atts)
         print('----------------done---------------')
