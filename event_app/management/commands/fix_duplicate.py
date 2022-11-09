@@ -16,15 +16,13 @@ class Command(BaseCommand):
                 phone = att.phone_number
                 day = att.day
                 level = att.level
-                atts = attendants.filter(name=name, phone_number=phone,
-                                         day=day, level=level)
+                atts = attendants.objects.filter(name=name, phone_number=phone,
+                                                day=day, level=level)
                 if atts.count() > 1:
                     for item in atts:
-                        duplicate_list.append(item)
+                        # duplicate_list.append(item)
                         ids.append(item.id)
+                    print(ids)
                     # atts[1:].delete()
-                    print('duplicate list: ', duplicate_list)
-                    print('id list: ', ids)
-
 
         print('----------------done---------------')
