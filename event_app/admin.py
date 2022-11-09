@@ -12,6 +12,7 @@ class AdminAttendant(admin.TabularInline):
 
 class AttendantAdmin(admin.ModelAdmin):
     search_fields = ['phone_number', 'name']
+    list_display = ['name', 'day', 'level', 'phone_number']
 
 
 class EventDetailAdmin(admin.ModelAdmin):
