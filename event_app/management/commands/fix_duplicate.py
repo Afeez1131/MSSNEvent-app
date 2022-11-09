@@ -16,7 +16,7 @@ class Command(BaseCommand):
                 phone = att.phone_number
                 day = att.day
                 level = att.level
-                atts = attendants.objects.filter(name=name, phone_number=phone,
+                atts = attendants.filter(name=name, phone_number=phone,
                                                 day=day, level=level)
                 if atts.count() > 1:
                     for item in atts:
