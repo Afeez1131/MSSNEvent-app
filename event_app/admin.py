@@ -10,6 +10,10 @@ class AdminAttendant(admin.TabularInline):
     extra = 0
 
 
+class AttendantAdmin(admin.ModelAdmin):
+    search_fields = ['phone_number', 'name']
+
+
 class EventDetailAdmin(admin.ModelAdmin):
     list_display = ['event_name', 'date', 'slug']
     inlines = [
