@@ -199,7 +199,7 @@ def attendant_by_day(request, slug, day):
     try:
         # attendants = Attendant.objects.filter(Q(eventdetail=events) & Q(day=day))
         attendants = get_list_or_404(Attendant, eventdetail=events, day=day)
-        paginator = Paginator(attendants, 10)
+        paginator = Paginator(attendants, 20)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
     except Exception as e:
