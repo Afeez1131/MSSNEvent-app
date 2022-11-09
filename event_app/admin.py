@@ -25,5 +25,5 @@ class EventDetailAdmin(admin.ModelAdmin):
 
 
 admin.site.register(EventDetail, EventDetailAdmin)
-admin.site.register(Attendant)
+admin.site.register(Attendant, AttendantAdmin)
 admin.site.register(Year)
