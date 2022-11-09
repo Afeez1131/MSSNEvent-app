@@ -4,7 +4,7 @@ from event_app.models import EventDetail, Attendant
 
 
 class Command(BaseCommand):
-    def handler(self, *args, **kwargs):
+    def handle(self, *args, **kwargs):
         events = EventDetail.objects.all()
         duplicate_list = []
         for event in events:
