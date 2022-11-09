@@ -182,7 +182,6 @@ def ajax_paginate(request):
             d = f'''<tr><td>{counter}</td><td>{att.name}</td><td>{att.level}</td><td>{att.phone_number}</td><td>{att.visitor}</td><td>{att.sex}</td><td>{att.department}</td><td>{att.email}</td><td>{att.day}</td></tr>'''
         out.append(d)
     fout = ''.join(out)
-
     return JsonResponse({'attendants': fout, 'pagination': pagination})
 
 
@@ -197,7 +196,6 @@ def ajax_all_attendants(request):
 @user_passes_test(lambda u: u.is_superuser)
 def attendant_by_day(request, slug, day):
     events = get_object_or_404(EventDetail, slug=slug)
-
     try:
         # attendants = Attendant.objects.filter(Q(eventdetail=events) & Q(day=day))
         attendants = get_list_or_404(Attendant, eventdetail=events, day=day)
