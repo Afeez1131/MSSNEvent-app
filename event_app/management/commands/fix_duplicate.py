@@ -8,7 +8,7 @@ class Command(BaseCommand):
         events = EventDetail.objects.all()
         duplicate_list = []
         for event in events:
-            attendants = event.attendants.distinct('name', 'phone', 'level')
+            attendants = event.attendants.distinct('name', 'phone_number', 'level')
             for att in attendants:
                 name = att.name
                 phone = att.phone_number
