@@ -120,7 +120,7 @@ def export_days_attendant(request, slug, day):
 def all_attendants(request, slug):
     event = get_object_or_404(EventDetail, slug=slug)
     attendants = event.attendants.all().order_by('-id')
-    paginator = Paginator(attendants, 10)
+    paginator = Paginator(attendants, 20)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     print('page number: ', page_obj)
@@ -134,7 +134,7 @@ def reload_attendants(request, event, slug, day=None):
         attendants = event.attendants.filter(day=day)
     else:
         attendants = event.attendants.all().order_by('-id')
-    paginator = Paginator(attendants, 10)
+    paginator = Paginator(attendants, 20)
     page_number = request.GET.get('page')
     attendants = paginator.get_page(page_number)
     attendants = [attendant for attendant in attendants]
