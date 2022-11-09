@@ -19,7 +19,7 @@ class Command(BaseCommand):
                                          day=day, level=level)
                 if atts.count() > 1:
                     for item in atts:
-                        duplicate_list.append(atts)
+                        duplicate_list.append(item)
                     # atts[1:].delete()
                     print('duplicate list: ', duplicate_list)
 
