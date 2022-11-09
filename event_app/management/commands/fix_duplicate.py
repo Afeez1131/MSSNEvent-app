@@ -11,8 +11,7 @@ class Command(BaseCommand):
             duplicate_list = []
             ids = []
             for att in events:
-                at = Attendant.objects.filter(name=att.name, day=att.day, level=att.level,
-                                              phone_number=att.phone_number, department=att.department)
+                at = Attendant.objects.filter(name=att.name, day=att.day, phone_number=att.phone_number)
                 if at.count() > 1:
                     for attendant in at[1:]:
                         attendant.delete()
