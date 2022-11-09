@@ -134,7 +134,7 @@ def reload_attendants(request, event, slug, day=None):
         attendants = event.attendants.filter(day=day)
     else:
         attendants = event.attendants.all().order_by('-id')
-    paginator = Paginator(attendants, 5)
+    paginator = Paginator(attendants, 10)
     page_number = request.GET.get('page')
     attendants = paginator.get_page(page_number)
     attendants = [attendant for attendant in attendants]
