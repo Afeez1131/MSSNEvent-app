@@ -7,22 +7,13 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         events = EventDetail.objects.all()
         for event in events:
-            attendants = event.attendants.all()
+            events = event.attendants.order_by('name').distinct('name', 'day', 'level', 'phone_number', 'department')
             duplicate_list = []
             ids = []
-
-            for att in attendants:
-                name = att.name
-                phone = att.phone_number
-                day = att.day
-                level = att.level
-                atts = attendants.filter(name=name, phone_number=phone,
-                                                day=day, level=level)
-                if atts.count() > 1:
-                    for item in atts:
-                        # duplicate_list.append(item)
-                        ids.append(item.id)
-                    print(ids)
-                    # atts[1:].delete()
+            for att in events:
+                at = Attendant.objects.filter(name=att.name, day=att.day, level=att.level,
+                                              phone_number=att.phone_number, department=att.department)
+                if at.count() > 1:
+                    print('dupplicate: ', [x.phone_number for x in at])
 
         print('----------------done---------------')
