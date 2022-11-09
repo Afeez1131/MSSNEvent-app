@@ -9,7 +9,7 @@ from datetime import datetime
 import json
 import csv
 from django.contrib import messages
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
@@ -109,7 +109,7 @@ def export_days_attendant(request, slug, day):
             writer.writerow(att)
 
     except Exception as e:
-        return Http404
+        pass
     return response
 
 
@@ -123,25 +123,20 @@ def all_attendants(request, slug):
     paginator = Paginator(attendants, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
+    print('page number: ', page_obj)
 
-    day_list = []
-    for att in page_obj:
-        if att.day in day_list:
-            pass
-        else:
-            day_list.append(att.day)
-
-    day_list.sort()
     return render(request, 'event_detail.html', {'attendants': attendants,
-                                                 'event': event, 'page_obj': page_obj,
-                                                 'day_list': day_list,
-                                                 })
+                                                 'event': event, 'page_obj': page_obj})
 
-def reload_attendants(event, slug, day=None):
+
+def reload_attendants(request, event, slug, day=None):
     if day:
         attendants = event.attendants.filter(day=day)
     else:
         attendants = event.attendants.all().order_by('-id')
+    paginator = Paginator(attendants, 5)
+    page_number = request.GET.get('page')
+    attendants = paginator.get_page(page_number)
     attendants = [attendant for attendant in attendants]
     out = []
     for i in range(len(attendants)):
@@ -154,13 +149,48 @@ def reload_attendants(event, slug, day=None):
         else:
             d = f'''<tr><td>{counter}</td><td>{att.name}</td><td>{att.level}</td><td>{att.phone_number}</td><td>{att.visitor}</td><td>{att.sex}</td><td>{att.department}</td><td>{att.email}</td><td>{att.day}</td></tr>'''
         out.append(d)
-    return out
+    fout = ''.join(out)
+    return fout
+
+from django.template.loader import render_to_string
+def ajax_paginate(request):
+    slug = request.GET.get('slug')
+    day = request.GET.get('day') or None
+    out = []
+    if not day:
+        event = EventDetail.objects.get(slug=slug)
+    else:
+        event = EventDetail.objects.get(slug=slug, day=day)
+    attendants = event.attendants.all()
+    paginator = Paginator(attendants, 10)
+    page = request.GET.get('page')
+    try:
+        attendants = paginator.page(page)
+    except PageNotAnInteger:
+        attendants = paginator.page(1)
+    except EmptyPage:
+        attendants = paginator.page(paginator.num_pages)
+    pagination = render_to_string('pagination.html', {'page_obj': attendants})
+    for i in range(len(attendants)):
+        counter = i + 1
+        att = attendants[i]
+        url = reverse('event_attendant', args=[slug])
+        day_url = reverse('event_list_day', args=[slug, att.day])
+        if not day:
+            d = f'''<tr><td>{counter}</td><td>{att.name}</td><td>{att.level}</td><td>{att.phone_number}</td><td>{att.visitor}</td><td>{att.sex}</td><td>{att.department}</td><td>{att.email}</td><td><a href="{day_url}">{att.day}</a></td></tr>'''
+        else:
+            d = f'''<tr><td>{counter}</td><td>{att.name}</td><td>{att.level}</td><td>{att.phone_number}</td><td>{att.visitor}</td><td>{att.sex}</td><td>{att.department}</td><td>{att.email}</td><td>{att.day}</td></tr>'''
+        out.append(d)
+    fout = ''.join(out)
+
+    return JsonResponse({'attendants': fout, 'pagination': pagination})
+
 
 def ajax_all_attendants(request):
     slug = request.GET.get('slug')
     day = request.GET.get('day') or None
     event = EventDetail.objects.get(slug=slug)
-    return JsonResponse({'attendants': reload_attendants(event, slug, day)})
+    return JsonResponse({'attendants': reload_attendants(request, event, slug, day)})
 
 
 @login_required
