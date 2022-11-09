@@ -17,9 +17,10 @@ class Command(BaseCommand):
                 atts = attendants.filter(name=name, phone_number=phone,
                                          day=day, level=level)
                 if atts.count() > 1:
-                    print('duplicate attendants: ', atts, atts.count())
-                    print('after first: ', atts[1:])
-                    atts[1:].delete()
+                    for item in atts:
+                        duplicate_list.append(atts)
+                    # atts[1:].delete()
+                print('duplicate list: ', duplicate_list)
 
 
         print('----------------done---------------')
