@@ -12,6 +12,13 @@ class CustomUserCreationForm(UserCreationForm):
         model = CustomUser
         fields = ('username', 'email')
 
+    # def clean(self):
+    #     password1 = self.cleaned_data.get('password1')
+    #     password2 = self.cleaned_data.get('password2')
+    #     if password1 and password2 and password1 != password2:
+    #         raise forms.ValidationError('The two password fields must be equal')
+    #     return self.cleaned_data
+
     def __init__(self, *args, **kwargs):
         super(CustomUserCreationForm, self).__init__(*args, **kwargs)
         self.fields['username'].widget.attrs['class'] = 'form-control'
