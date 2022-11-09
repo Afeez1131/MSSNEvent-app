@@ -127,7 +127,25 @@
 {% block script %}
 <script type="text/javascript">
 
-console.log($('#event_slug').val());
+    function paginate(page) {
+            let slug = $('#event_slug').val()
+            let day = $('#event_day').val()
+            $.ajax({
+                url: '/paginate/',
+                type: 'GET',
+                data: {'page': page, 'slug': slug, 'day': day},
+                {#dataType: 'html',#}
+                success: function (data) {
+                    $('#attendants_body').html(data.attendants);
+                    $('#pagination').html(data.pagination);
+                    $.notify('Success', 'success')
+                },
+                error: function (e) {
+                    $.notify('Error occured', 'error')
+                }
+            })
+        }
+
     function reload_attendants() {
         $.ajax({
             url: '/all-attendants/',
@@ -137,7 +155,7 @@ console.log($('#event_slug').val());
                     'day': $('#event_day').val(),
             },
             success: function (data) {
-                $.notify('Data updated', 'success');
+                {#$.notify('Data updated', 'success');#}
                 $('#attendants_body').html(data.attendants);
             },
             error: function (data) {$.notify('Error occured', 'error');}
