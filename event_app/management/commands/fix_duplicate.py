@@ -6,9 +6,10 @@ from event_app.models import EventDetail, Attendant
 class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         events = EventDetail.objects.all()
-        duplicate_list = []
         for event in events:
             attendants = event.attendants.all()
+            duplicate_list = []
+
             for att in attendants:
                 name = att.name
                 phone = att.phone_number
@@ -20,7 +21,7 @@ class Command(BaseCommand):
                     for item in atts:
                         duplicate_list.append(atts)
                     # atts[1:].delete()
-                print('duplicate list: ', duplicate_list)
+                    print('duplicate list: ', duplicate_list)
 
 
         print('----------------done---------------')
