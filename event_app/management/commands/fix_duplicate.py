@@ -8,7 +8,7 @@ class Command(BaseCommand):
         events = EventDetail.objects.all()
         duplicate_list = []
         for event in events:
-            attendants = event.attendants.distinct('name')
+            attendants = event.attendants.distinct('name', 'phone', 'level')
             for att in attendants:
                 name = att.name
                 phone = att.phone_number
@@ -18,5 +18,5 @@ class Command(BaseCommand):
                                          day=day, level=level)
                 if atts.count() > 1:
                     # atts[1:].delete()
-                    print('duplicate attendants: ', atts)
+                    print('duplicate attendants: ', atts, atts.count())
         print('----------------done---------------')
