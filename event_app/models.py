@@ -38,16 +38,10 @@ class EventDetail(models.Model):
         ordering = ('-id',)
 
     def save(self, *args, **kwargs):
-        print(self.slug)
-        with transaction.atomic():
-            try:
-                if self.pk is None:
-                    self.event_name += ' ' + str(self.year)
+        if not self.slug:
+            self.slug = slugify(self.event_name)
+        super(EventDetail, self).save(*args, **kwargs)  # calling save method
 
-                super(EventDetail, self).save(
-                    *args, **kwargs)  # calling save method
-            except Exception as IntegrityError:
-                pass
 
     def get_absolute_url(self):
         return reverse('event_attendant', kwargs={'slug': self.slug})
