@@ -41,7 +41,7 @@
                 </a>
             </div>
         </div>
-        {% if page_obj %}
+{#        {% if page_obj %}#}
             <div class="card shadow mb-4">
 
                 <div class="card-body">
@@ -110,11 +110,11 @@
                 </div>
                 </div>
             </div>
-        {% else %}
-            <h3>Event Name: {{ event.event_name | title }}</h3>
-            <h2>No registered Attendant Presently</h2>
-            </div>
-        {% endif %}
+{#        {% else %}#}
+{#            <h3>Event Name: {{ event.event_name | title }}</h3>#}
+{#            <h2>No registered Attendant Presently</h2>#}
+{#            </div>#}
+{#        {% endif %}#}
     <input type="hidden" id="event_slug" name='event_slug' value="{{ event.slug }}">
 
 {% endblock content %}

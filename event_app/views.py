@@ -239,15 +239,18 @@ def create_attendant(request, slug):
 
 
 def search_attendant(request):
+    """will search for the attendants query provided in the attendants records,
+    and then return the distinct attendants to avoid duplicaiton
+    """
     out = []
     query = request.GET.get('query') or None
     slug = request.GET.get('slug') or None
     eventdetail = EventDetail.objects.get(slug=slug)
     # eventdetail = eventdetail.attendants.order_by('id', 'name', 'level')
-    attendants = eventdetail.attendants.filter(Q(phone_number__iexact=query) |
-                                               Q(name__icontains=query) |
-                                               Q(email__icontains=query)
-                                               )
+    attendants = Attendant.objects.filter(Q(phone_number__iexact=query) |
+                                          Q(name__icontains=query) |
+                                          Q(email__icontains=query)
+                                          )
     attendants = attendants.order_by('name', 'department').distinct('name', 'level', 'department',
                                                                     'phone_number', 'email')
     for att in attendants:
@@ -259,10 +262,10 @@ def search_attendant(request):
 
 
 def fill_attendant_form(request):
-    slug = request.GET.get('slug') or None
+    """will fill the attendant create form with the
+    details of the selected attendant"""
     aid = request.GET.get('id') or None
-    eventdetail = EventDetail.objects.get(slug=slug)
-    attendant = eventdetail.attendants.get(id=aid)
+    attendant = Attendant.objects.get(id=aid)
 
     d = {'id': attendant.id, 'name': attendant.name, 'level': attendant.level,
          'phone_number': attendant.phone_number,
