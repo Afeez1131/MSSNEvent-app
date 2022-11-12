@@ -59,4 +59,4 @@ class EventCreateForm(forms.ModelForm):
         self.fields['event_name'].label = ''
     class Meta:
         model = EventDetail
-        exclude = ('year',)
+        exclude = ['year', 'slug']
