@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.db.utils import IntegrityError
 from django.http.response import Http404, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
@@ -152,7 +153,10 @@ def reload_attendants(request, event, slug, day=None):
     fout = ''.join(out)
     return fout
 
+
 from django.template.loader import render_to_string
+
+
 def ajax_paginate(request):
     slug = request.GET.get('slug')
     day = request.GET.get('day') or None
@@ -212,6 +216,7 @@ def attendant_by_day(request, slug, day):
 
 def create_attendant(request, slug):
     eventdetail = get_object_or_404(EventDetail, slug=slug)
+    print('GET REQUEST: ', request.GET)
     name = None
     if request.method == 'POST':
         form = AttendantCreateForm(request.POST)
@@ -231,6 +236,38 @@ def create_attendant(request, slug):
     else:
         form = AttendantCreateForm()
     return render(request, 'attendant_create.html', {'form': form, 'name': name, 'slug': eventdetail.slug})
+
+
+def search_attendant(request):
+    out = []
+    query = request.GET.get('query') or None
+    slug = request.GET.get('slug') or None
+    eventdetail = EventDetail.objects.get(slug=slug)
+    # eventdetail = eventdetail.attendants.order_by('id', 'name', 'level')
+    attendants = eventdetail.attendants.filter(Q(phone_number__iexact=query) |
+                                               Q(name__icontains=query) |
+                                               Q(email__icontains=query) |
+                                               Q(matric_no__iexact=query))
+    attendants = attendants.order_by('name', 'department').distinct('name', 'level', 'department',
+                                                                             'phone_number', 'email')
+    for att in attendants:
+        d = {'id': att.id, 'name': att.name, 'level': att.level, 'phone_number': att.phone_number,
+             'department': att.department, 'email': att.email, 'sex': att.sex}
+        out.append(d)
+    # fout = ''.join(out)
+    return JsonResponse({'result': out})
+
+
+def fill_attendant_form(request):
+    slug = request.GET.get('slug') or None
+    aid = request.GET.get('id') or None
+    eventdetail = EventDetail.objects.get(slug=slug)
+    attendant = eventdetail.attendants.get(id=aid)
+
+    d = {'id': attendant.id, 'name': attendant.name, 'level': attendant.level,
+         'phone_number': attendant.phone_number,
+         'department': attendant.department, 'email': attendant.email, 'sex': attendant.sex}
+    return JsonResponse({'result': d})
 
 
 def ajax_create_attendants(request):
