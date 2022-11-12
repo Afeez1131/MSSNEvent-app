@@ -22,7 +22,7 @@ urlpatterns = [
     path('dashboard/<slug:slug>/', views.dashboard_all, name='dashboard'),
     # create a new attendant
     path('dashboard/<slug:slug>/<day>/', views.dashboard, name='dashboard'),
-    path('create-event-attendants', views.ajax_create_attendants),
+    path('create-event-attendants/', views.ajax_create_attendants),
     path('search-attendants/', views.search_attendant),
     path('fill-attendant-form/', views.fill_attendant_form),
     path('paginate/', views.ajax_paginate)

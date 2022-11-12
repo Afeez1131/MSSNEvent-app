@@ -81,7 +81,9 @@ Register User
                     $.notify('Error occured ' + e.servererror, 'error')
                 }
             },
-            error: function (e) {$.notify('Error occured', 'error')}
+            error: function (e) {
+                $.notify('Error occured', 'error');
+                console.log(e)}
         })
     })
 
