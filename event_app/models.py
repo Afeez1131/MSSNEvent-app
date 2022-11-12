@@ -28,7 +28,7 @@ class EventDetail(models.Model):
         Year, on_delete=models.SET_NULL, related_name='events', null=True)
     event_name = models.CharField(max_length=100, unique=True)
     date = models.DateField(default=datetime.now)
-    slug = AutoSlugField(populate_from='event_name')
+    slug = models.SlugField(blank=True)
     status = models.BooleanField(default=True)
 
     def __str__(self):
@@ -40,7 +40,7 @@ class EventDetail(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.event_name)
+            self.slug = slugify(self.event_name) + '-%s' % self.year.year
         super(EventDetail, self).save(*args, **kwargs)  # calling save method
 
     def get_absolute_url(self):
