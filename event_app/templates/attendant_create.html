@@ -20,6 +20,27 @@ Register User
                 </button>
             </div>
             {% endfor %}{% endif %}
+        <div id="search">
+        <form method="get" id="attendant-search" class="form-group mb-3">
+            <input type="text" name="query" id="query" class="form-control" autocomplete="false">
+            <small class="text-mute text-danger">You can Search using Phone Number or Name</small><br>
+            <button type="submit" class="btn btn-primary">Search </button>
+        </form>
+            <table id='search-result' class="table table-bordered table-sm">
+                <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>Level</td>
+                    <td>Phone</td>
+                    <td>Dept.</td>
+                    <td>e-mail</td>
+                    <td>sex</td>
+                </tr>
+                </thead>
+                <tbody id="attendants-result">
+                </tbody>
+            </table>
+        </div>
             <div class="form-group">
                 <form action="" method="post" id="attendant-form">
                     {% csrf_token %}
@@ -32,15 +53,19 @@ Register User
 
     </div>
 </div>
+<input type="hidden" id='event_slug' value="{{ slug }}">
 {% endblock content %}
 {% block script %}
 <script type="text/javascript">
+    /*
+    will handle the creation of new attendants and notify on success or error
+    */
     let form = $('#attendant-form')
     form.submit(function (e) {
         e.preventDefault();
 
         $.ajax({
-            url: '/create-event-attendants',
+            url: '/create-event-attendants/',
             type: 'POST',
             data: $(this).serialize(),
             dataType: 'json',
@@ -59,6 +84,77 @@ Register User
             error: function (e) {$.notify('Error occured', 'error')}
         })
     })
+
+    /* will handle the use of the search box
+    will prefil the result table which is set as hidden and show
+    distinct results.
+     */
+
+    let searchResult = $('#search-result')
+    let resultBody = $('#attendants-result')
+    searchResult.hide()
+    let search = $('#attendant-search');
+    search.submit(function (event) {
+        event.preventDefault();
+        if ($('#query').val().length > 0) {
+            $.ajax({
+            url: '/search-attendants/',
+            type: 'GET',
+            data: {
+                'csrfmiddlewaretoken': getCookie('csrftoken'),
+                'query': $('#query').val(),
+                'slug': $('#event_slug').val()
+            },
+            success: function (data) {
+                $('#query').val('')
+                let array = data.result;
+                let table_data = '';
+                for (let i=0; i < array.length; i++) {
+                    console.log(i, '+', array[i].name);
+                    table_data += (`<tr><td>${array[i].name}</td><td>${array[i].level}</td>
+                   <td>${array[i].phone_number}</td><td>${array[i].department}</td>
+                    <td>${array[i].email}</td><td>${array[i].sex}</td><td><button class='btn btn-secondary'
+                    type='button' onclick="fillData('${array[i].id}');">Select</button></td></tr>`)
+                }
+                resultBody.html(table_data);
+
+                {#resultBody.html(data.result);#}
+                searchResult.show()
+                {#$.notify('Data Retrieve Successfully', 'success')#}
+            },
+            error: function () {console.log('error occured while fetching data')}
+        })
+        } else {
+            $.notify('You are yet to enter a search query', 'error');
+        }
+
+    })
+    /* will handle filling the datas in the attendants creation form
+    on the click of select button, every field will be auto filled.
+     */
+    function fillData(id) {
+        searchResult.hide();
+        $.ajax({
+            url: '/fill-attendant-form/',
+            type: 'GET',
+            data: {
+                'csrfmiddlewaretoken': getCookie('csrftoken'),
+                'id': id,
+                'slug': $('#event_slug').val()
+            },
+            success: function (data) {
+                let array = data.result;
+                $('#id_name').val(array.name);
+                $('#id_level').val(array.level);
+                $('#id_phone_number').val(array.phone_number);
+                $('#id_department').val(array.department);
+                $('#id_email').val(array.email);
+                $('#id_sex').val(array.sex);
+                {#$.notify('Data Filled Successfully', 'success')#}
+            },
+            error: function () {console.log('error occured while fetching data')}
+        })
+    }
 
 </script>
 {% endblock %}

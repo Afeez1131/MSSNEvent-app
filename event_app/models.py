@@ -138,6 +138,7 @@ class Attendant(models.Model):
     phone_regex = RegexValidator(
         regex='^[0]\d{10}$', message="Phone number should be in the format: 08105506606")
     phone_number = models.CharField(max_length=11, validators=[phone_regex])
+    matric_no = models.CharField(max_length=10, null=True, blank=True)
     visitor = models.CharField(
         max_length=3, choices=STATUS_CHOICES, default='no')
     department = models.CharField(max_length=200, choices=DEPARTMENT_CHOICE, default='Accounting Technology')
