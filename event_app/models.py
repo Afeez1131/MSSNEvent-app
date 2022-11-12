@@ -145,7 +145,6 @@ class Attendant(models.Model):
     email = models.EmailField()
     sex = models.CharField(
         max_length=10, choices=SEX_CHOICE, default='brother', null=True, blank=True)
-    demo = models.CharField(max_length=20, null=True, blank=True)
 
     def __str__(self):
         return self.name
