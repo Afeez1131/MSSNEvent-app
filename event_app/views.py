@@ -246,11 +246,10 @@ def search_attendant(request):
     # eventdetail = eventdetail.attendants.order_by('id', 'name', 'level')
     attendants = eventdetail.attendants.filter(Q(phone_number__iexact=query) |
                                                Q(name__icontains=query) |
-                                               Q(email__icontains=query) |
-                                               Q(matric__iexact=query)
+                                               Q(email__icontains=query)
                                                )
     attendants = attendants.order_by('name', 'department').distinct('name', 'level', 'department',
-                                                                             'phone_number', 'email')
+                                                                    'phone_number', 'email')
     for att in attendants:
         d = {'id': att.id, 'name': att.name, 'level': att.level, 'phone_number': att.phone_number,
              'department': att.department, 'email': att.email, 'sex': att.sex}
