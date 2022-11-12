@@ -29,6 +29,7 @@ class EventDetail(models.Model):
     event_name = models.CharField(max_length=100, unique=True)
     date = models.DateField(default=datetime.now)
     slug = AutoSlugField(populate_from='event_name')
+    status = models.BooleanField(default=True)
 
     def __str__(self):
         return self.event_name
@@ -41,7 +42,6 @@ class EventDetail(models.Model):
         if not self.slug:
             self.slug = slugify(self.event_name)
         super(EventDetail, self).save(*args, **kwargs)  # calling save method
-
 
     def get_absolute_url(self):
         return reverse('event_attendant', kwargs={'slug': self.slug})
@@ -80,47 +80,47 @@ class Attendant(models.Model):
     )
 
     DEPARTMENT_CHOICE = (
-        ('Accounting Technology','Accounting Technology'),
-        ('Agricultural Economics','Agricultural Economics'),
-        ('Agricultural Economics and Extension','Agricultural Economics and Extension'),
-        ('Agricultural Engineering','Agricultural Engineering'),
-        ('Agricultural Extension and Rural Development','Agricultural Extension and Rural Development'),
-        ('Agriculture','Agriculture'),
-        ('Anatomy','Anatomy'),
-        ('Animal Nutrition and Biotechnology','Animal Nutrition and Biotechnology'),
-        ('Animal Production and Health','Animal Production and Health'),
-        ('Architecture','Architecture'),
-        ('Biochemistry','Biochemistry'),
-        ('Chemical Engineering','Chemical Engineering'),
-        ('Civil Engineering','Civil Engineering'),
-        ('Computer Engineering','Computer Engineering'),
-        ('Computer Science','Computer Science'),
-        ('Crop And Environmental Protection','Crop And Environmental Protection'),
-        ('Crop Production And Soil Science','Crop Production And Soil Science'),
-        ('Earth Science','Earth Science'),
-        ('Economics','Economics'),
-        ('Electrical / Electronic Engineering','Electrical / Electronic Engineering'),
-        ('Fine / Applied Art','Fine / Applied Art'),
-        ('Food Science and Engineering','Food Science and Engineering'),
-        ('Information Systems','Information Systems'),
-        ('Marketing','Marketing'),
-        ('Mechanical Engineering','Mechanical Engineering'),
-        ('Medical Biochemistry','Medical Biochemistry'),
-        ('Medical Laboratory Technology / Science','Medical Laboratory Technology / Science'),
-        ('Medicine and Surgery','Medicine and Surgery'),
-        ('Nursing / Nursing Science','Nursing / Nursing Science'),
-        ('Nutrition and Dietetics','Nutrition and Dietetics'),
-        ('Physics','Physics'),
-        ('Physiology','Physiology'),
-        ('Pure / Applied Biology','Pure / Applied Biology'),
-        ('Pure / Applied Chemistry','Pure / Applied Chemistry'),
-        ('Pure / Applied Mathematics','Pure / Applied Mathematics'),
-        ('Pure and Industrial Chemistry','Pure and Industrial Chemistry'),
-        ('Science Laboratory Technology','Science Laboratory Technology'),
-        ('Transport Management Technology','Transport Management Technology'),
-        ('Urban and Regional Planning','Urban and Regional Planning'),
-        ('Fine and Applied Arts','Fine and Applied Arts'),
-        ('Cyber Security','Cyber Security'),
+        ('Accounting Technology', 'Accounting Technology'),
+        ('Agricultural Economics', 'Agricultural Economics'),
+        ('Agricultural Economics and Extension', 'Agricultural Economics and Extension'),
+        ('Agricultural Engineering', 'Agricultural Engineering'),
+        ('Agricultural Extension and Rural Development', 'Agricultural Extension and Rural Development'),
+        ('Agriculture', 'Agriculture'),
+        ('Anatomy', 'Anatomy'),
+        ('Animal Nutrition and Biotechnology', 'Animal Nutrition and Biotechnology'),
+        ('Animal Production and Health', 'Animal Production and Health'),
+        ('Architecture', 'Architecture'),
+        ('Biochemistry', 'Biochemistry'),
+        ('Chemical Engineering', 'Chemical Engineering'),
+        ('Civil Engineering', 'Civil Engineering'),
+        ('Computer Engineering', 'Computer Engineering'),
+        ('Computer Science', 'Computer Science'),
+        ('Crop And Environmental Protection', 'Crop And Environmental Protection'),
+        ('Crop Production And Soil Science', 'Crop Production And Soil Science'),
+        ('Earth Science', 'Earth Science'),
+        ('Economics', 'Economics'),
+        ('Electrical / Electronic Engineering', 'Electrical / Electronic Engineering'),
+        ('Fine / Applied Art', 'Fine / Applied Art'),
+        ('Food Science and Engineering', 'Food Science and Engineering'),
+        ('Information Systems', 'Information Systems'),
+        ('Marketing', 'Marketing'),
+        ('Mechanical Engineering', 'Mechanical Engineering'),
+        ('Medical Biochemistry', 'Medical Biochemistry'),
+        ('Medical Laboratory Technology / Science', 'Medical Laboratory Technology / Science'),
+        ('Medicine and Surgery', 'Medicine and Surgery'),
+        ('Nursing / Nursing Science', 'Nursing / Nursing Science'),
+        ('Nutrition and Dietetics', 'Nutrition and Dietetics'),
+        ('Physics', 'Physics'),
+        ('Physiology', 'Physiology'),
+        ('Pure / Applied Biology', 'Pure / Applied Biology'),
+        ('Pure / Applied Chemistry', 'Pure / Applied Chemistry'),
+        ('Pure / Applied Mathematics', 'Pure / Applied Mathematics'),
+        ('Pure and Industrial Chemistry', 'Pure and Industrial Chemistry'),
+        ('Science Laboratory Technology', 'Science Laboratory Technology'),
+        ('Transport Management Technology', 'Transport Management Technology'),
+        ('Urban and Regional Planning', 'Urban and Regional Planning'),
+        ('Fine and Applied Arts', 'Fine and Applied Arts'),
+        ('Cyber Security', 'Cyber Security'),
 
     )
     eventdetail = models.ForeignKey(
