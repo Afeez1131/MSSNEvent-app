@@ -214,8 +214,6 @@ def attendant_by_day(request, slug, day):
                                                      })
 
 
-@login_required()
-@user_passes_test(lambda u: u.is_superuser)
 def create_attendant(request, slug):
     eventdetail = get_object_or_404(EventDetail, slug=slug)
     print('GET REQUEST: ', request.GET)
