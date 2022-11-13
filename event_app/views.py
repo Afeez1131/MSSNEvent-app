@@ -166,7 +166,7 @@ def ajax_paginate(request):
     else:
         event = EventDetail.objects.get(slug=slug, day=day)
     attendants = event.attendants.all()
-    paginator = Paginator(attendants, 10)
+    paginator = Paginator(attendants, 20)
     page = request.GET.get('page')
     try:
         attendants = paginator.page(page)
